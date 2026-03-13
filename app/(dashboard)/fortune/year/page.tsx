@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { ChevronLeft, Share2, RefreshCw, Star } from 'lucide-react';
+import { ReadAloudButton } from '@/components/read-aloud-button';
 import type { FortuneContent } from '@/lib/types';
 
 export default function YearlyFortunePage() {
@@ -156,9 +157,17 @@ export default function YearlyFortunePage() {
             {/* Main Fortune Text */}
             <Card className="border-border/50 shadow-md">
               <CardHeader className="pb-2">
-                <CardTitle className="font-serif text-lg text-primary">
-                  {currentYear}년 종합 운세
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="font-serif text-lg text-primary">
+                    {currentYear}년 종합 운세
+                  </CardTitle>
+                  <ReadAloudButton
+                    text={`${currentYear}년 종합 운세. 운세 점수 ${fortune.fortune_score}점. ${fortune.fortune_text}. 행운 색: ${fortune.lucky_color}. 행운 숫자: ${fortune.lucky_number}. 행운 방향: ${fortune.lucky_direction}. 행운 띠: ${fortune.lucky_zodiac}.`}
+                    label={`${currentYear}년 운세`}
+                    size="sm"
+                    variant="ghost"
+                  />
+                </div>
               </CardHeader>
               <CardContent>
                 <p className="text-foreground leading-loose text-lg whitespace-pre-line">
