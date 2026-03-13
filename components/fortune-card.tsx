@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ReadAloudButton } from '@/components/read-aloud-button';
 import type { FortuneContent } from '@/lib/types';
 
 interface FortuneCardProps {
@@ -8,14 +9,26 @@ interface FortuneCardProps {
   title?: string;
 }
 
+function buildReadText(fortune: FortuneContent, title: string): string {
+  return `${title}. 운세 점수 ${fortune.fortune_score}점. ${fortune.fortune_text}. 행운 색: ${fortune.lucky_color}. 행운 숫자: ${fortune.lucky_number}. 행운 방향: ${fortune.lucky_direction}. 행운 띠: ${fortune.lucky_zodiac}.`;
+}
+
 export function FortuneCard({ fortune, title = "오늘의 운세" }: FortuneCardProps) {
   return (
     <Card className="border-border/50 shadow-lg bg-gradient-to-br from-card to-secondary/20 overflow-hidden">
       <CardHeader className="pb-3 border-b border-border/30">
-        <CardTitle className="font-serif text-xl flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          {title}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="font-serif text-xl flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" aria-hidden="true" />
+            {title}
+          </CardTitle>
+          <ReadAloudButton
+            text={buildReadText(fortune, title)}
+            label={title}
+            size="sm"
+            variant="ghost"
+          />
+        </div>
       </CardHeader>
       <CardContent className="pt-5 space-y-5">
         {/* Fortune Score */}

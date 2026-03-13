@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useUser } from '@/lib/user-context';
 import { BIRTH_TIME_OPTIONS, JOB_OPTIONS, type SignupFormData, type UserInfo, type BirthData } from '@/lib/types';
+import { VoiceInputButton } from '@/components/voice-input-button';
 
 export function SignupForm() {
   const router = useRouter();
@@ -106,16 +107,31 @@ export function SignupForm() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">이메일</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="example@email.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className={errors.email ? 'border-destructive' : ''}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="email"
+                type="email"
+                placeholder="example@email.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className={errors.email ? 'border-destructive flex-1' : 'flex-1'}
+                aria-describedby={errors.email ? 'email-error' : undefined}
+              />
+              <VoiceInputButton
+                hint="이메일"
+                size="default"
+                onTranscript={(text) => {
+                  // Voice dictation: normalise common spoken patterns like "골뱅이" → "@"
+                  const normalised = text
+                    .replace(/골뱅이|앳|at sign/gi, '@')
+                    .replace(/점|닷|dot/gi, '.')
+                    .replace(/\s+/g, '');
+                  setFormData((prev) => ({ ...prev, email: normalised }));
+                }}
+              />
+            </div>
             {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
+              <p id="email-error" className="text-sm text-destructive">{errors.email}</p>
             )}
           </div>
           
@@ -277,12 +293,22 @@ export function SignupForm() {
             <Label htmlFor="birth_location">
               출생지 <span className="text-muted-foreground text-sm">(선택)</span>
             </Label>
-            <Input
-              id="birth_location"
-              placeholder="예: 서울, 부산"
-              value={formData.birth_location}
-              onChange={(e) => setFormData({ ...formData, birth_location: e.target.value })}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="birth_location"
+                placeholder="예: 서울, 부산"
+                value={formData.birth_location}
+                onChange={(e) => setFormData({ ...formData, birth_location: e.target.value })}
+                className="flex-1"
+              />
+              <VoiceInputButton
+                hint="출생지"
+                size="default"
+                onTranscript={(text) =>
+                  setFormData((prev) => ({ ...prev, birth_location: text.trim() }))
+                }
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
